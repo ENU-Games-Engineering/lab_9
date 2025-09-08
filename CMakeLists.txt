@@ -41,7 +41,8 @@ add_executable(ai_decision
     ai_cmps.cpp
     graphics_cmps.cpp
     astar.cpp
-    states.cpp)
+    states.cpp
+    decision_tree.cpp)
 target_include_directories(ai_decision PRIVATE ${SFML_INCS} engine tile_level_loader)
 target_link_libraries(ai_decision sfml-graphics engine tile_level)
 set_target_properties(ai_decision 

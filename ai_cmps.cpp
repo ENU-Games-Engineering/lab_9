@@ -5,7 +5,7 @@
 
 using param = Parameters;
 
-SteeringOutput SteeringBehaviours::seek(const sf::Vector2f &target,const sf::Vector2f &self){
+SteeringFunction SteeringBehaviours::seek = [](const sf::Vector2f &target,const sf::Vector2f &self) -> SteeringOutput{
     auto length = [](const sf::Vector2f &v) -> float{
         return std::sqrt(v.x*v.x+v.y*v.y);
     };
@@ -14,10 +14,10 @@ SteeringOutput SteeringBehaviours::seek(const sf::Vector2f &target,const sf::Vec
     steering.direction = steering.direction/length(steering.direction) ;
     steering.rotation = 0.0f;
     return steering;
-}
+};
 
 
-SteeringOutput SteeringBehaviours::flee(const sf::Vector2f &target,const sf::Vector2f &self){
+SteeringFunction SteeringBehaviours::flee = [](const sf::Vector2f &target,const sf::Vector2f &self) -> SteeringOutput{
     auto length = [](const sf::Vector2f &v) -> float{
         return std::sqrt(v.x*v.x+v.y*v.y);
     };
@@ -26,9 +26,18 @@ SteeringOutput SteeringBehaviours::flee(const sf::Vector2f &target,const sf::Vec
     steering.direction = steering.direction/length(steering.direction) ;
     steering.rotation = 0.0f;
     return steering;
-}
+};
 
 
+SteeringFunction SteeringBehaviours::stationary = [](const sf::Vector2f &target,const sf::Vector2f &self) -> SteeringOutput{
+    auto length = [](const sf::Vector2f &v) -> float{
+        return std::sqrt(v.x*v.x+v.y*v.y);
+    };
+    SteeringOutput steering;
+    steering.direction = {0,0};
+    steering.rotation = 0.0f;
+    return steering;
+};
 
 void SteeringComponent::update(const float &dt) {
 
@@ -127,4 +136,11 @@ void StateMachineComponent::change_state(const std::string &name)
         _current_state = found->second;
         _current_state_name = name;
     }
+}
+
+DecisionTreeComponent::DecisionTreeComponent(Entity *p, std::shared_ptr<DecisionTreeNode> decision_tree) 
+    : _decision_tree(decision_tree), Component(p) { }
+
+void DecisionTreeComponent::update(const float &dt) {
+    _decision_tree->make_decision(_parent);
 }

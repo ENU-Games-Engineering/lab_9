@@ -75,7 +75,48 @@ void StateScene::render() {
 }
 
 void DecisionScene::load() {
+    std::shared_ptr<Entity> player = make_entity();
+    player->set_position(sf::Vector2f(param::game_width / 2, 
+        param::game_height / 2));
+    std::shared_ptr<ShapeComponent> s = player->add_component<ShapeComponent>();
+    s->set_shape<sf::CircleShape>(10.0f);
+    s->get_shape().setFillColor(sf::Color::Red);
+    player->add_component<KeyboardMovementComponent>();
+    
+    std::random_device dev;
+    std::default_random_engine engine(dev());
+    std::uniform_real_distribution<float> x_dist(0.0f, param::game_width);
+    std::uniform_real_distribution<float> y_dist(0.0f, param::game_height);
+    
+    for (size_t n = 0; n < 100; ++n)
+    {
+        std::shared_ptr<Entity> enemy = make_entity();
+        enemy->set_position(sf::Vector2f(x_dist(engine), y_dist(engine)));
+        std::shared_ptr<ShapeComponent> s = enemy->add_component<ShapeComponent>();
+        s->set_shape<sf::CircleShape>(10.0f);
+        s->get_shape().setFillColor(sf::Color::Blue);
+        
+        auto sm = enemy->add_component<StateMachineComponent>();
+        sm->add_state("stationary", std::make_shared<SteeringState>(SteeringBehaviours::stationary,player,50.f,sf::Color::Yellow));
+        sm->add_state("seek", std::make_shared<SteeringState>(SteeringBehaviours::seek,player,50.f,sf::Color::Red));
+        sm->add_state("flee", std::make_shared<SteeringState>(SteeringBehaviours::flee,player,50.f,sf::Color::Green));
+        
+        auto decision = std::make_shared<DistanceDecision>(
+            player,
+            50.0f,
+            std::make_shared<SteeringDecision>("flee"),
+            std::make_shared<DistanceDecision>(
+                player,
+                100.0f,
+                std::make_shared<RandomDecision>(
+                    std::make_shared<SteeringDecision>("seek"),
+                    std::make_shared<SteeringDecision>("stationary")),
+               std::make_shared<SteeringDecision>("seek")));
+        
+        enemy->add_component<DecisionTreeComponent>(decision);
+    }
 }
+
 
 void DecisionScene::unload() { Scene::unload(); }
 

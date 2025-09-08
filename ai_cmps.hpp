@@ -1,6 +1,8 @@
 #pragma once
+#include <functional>
 #include <SFML/Graphics.hpp>
-#include <ecm.hpp>
+#include "ecm.hpp"
+#include "decision_tree.hpp"
 
 
 // Output from a steering behaviour.
@@ -12,10 +14,12 @@ struct SteeringOutput
     float rotation;
 };
 
+typedef std::function<SteeringOutput(const sf::Vector2f &,const sf::Vector2f &)> SteeringFunction;
 
 struct SteeringBehaviours{
-    static SteeringOutput seek(const sf::Vector2f &,const sf::Vector2f &);
-    static SteeringOutput flee(const sf::Vector2f &,const sf::Vector2f &);
+    static SteeringFunction seek;
+    static SteeringFunction flee;
+    static SteeringFunction stationary;
 };
 
 class SteeringComponent : public Component{
@@ -72,4 +76,16 @@ public:
     void remove_state(const std::string&);
     void change_state(const std::string&);
     const std::string& current_state() const {return _current_state_name; }
+};
+
+
+class DecisionTreeComponent : public Component
+{
+private:
+    std::shared_ptr<DecisionTreeNode> _decision_tree;
+public:
+    void update(const float &) override;
+    void render() override { }
+    explicit DecisionTreeComponent(Entity *p, std::shared_ptr<DecisionTreeNode> decision_tree);
+    DecisionTreeComponent() = delete;
 };
