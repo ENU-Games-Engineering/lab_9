@@ -14,7 +14,7 @@ struct SteeringOutput
     float rotation;
 };
 
-typedef std::function<SteeringOutput(const sf::Vector2f &,const sf::Vector2f &)> SteeringFunction;
+using SteeringFunction = std::function<SteeringOutput(const sf::Vector2f &,const sf::Vector2f &)>;
 
 struct SteeringBehaviours{
     static SteeringFunction seek;

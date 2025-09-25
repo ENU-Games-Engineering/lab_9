@@ -29,8 +29,8 @@ void NearState::execute(Entity *owner, const float &dt){
     }
 }
 
-SteeringState::SteeringState(SteeringFunction steering,std::shared_ptr<Entity> player,float max_speed,sf::Color color) 
-    : _steering(steering),_player(player),_max_speed(_max_speed), _color(color){}
+SteeringState::SteeringState(SteeringFunction steering,std::shared_ptr<Entity> player,float max_speed,sf::Color color)
+    : _steering(steering),_player(player),_max_speed(max_speed), _color(color){}
 
 void SteeringState::execute(Entity *owner, const float &dt){
     std::shared_ptr<ShapeComponent> s = owner->get_components<ShapeComponent>()[0];

@@ -36,7 +36,7 @@ void MenuScene::load() {
     _font.loadFromFile("resources/fonts/RobotoMono-Regular.ttf");
     _text.setFont(_font);
     _text.setCharacterSize(60);
-    _text.setString("Movement Demos\nPress 1 for Steering\nPress 2 for Pathfinding");
+    _text.setString("Decisions Demos\nPress 1 for States Machines\nPress 2 for Decision Trees");
 }
 
 void MenuScene::unload(){}
@@ -51,7 +51,7 @@ void StateScene::load(){
     player->add_component<KeyboardMovementComponent>();
     
     std::shared_ptr<Entity> enemy = make_entity();
-    enemy->set_position(sf::Vector2f(50.0f, 50.0f));
+    enemy->set_position(sf::Vector2f(param::game_width / 4.f,param::game_height / 4.f));
     s = enemy->add_component<ShapeComponent>();
     s->set_shape<sf::CircleShape>(10.0f);
     s->get_shape().setFillColor(sf::Color::Blue);
@@ -80,7 +80,7 @@ void DecisionScene::load() {
         param::game_height / 2));
     std::shared_ptr<ShapeComponent> s = player->add_component<ShapeComponent>();
     s->set_shape<sf::CircleShape>(10.0f);
-    s->get_shape().setFillColor(sf::Color::Red);
+    s->get_shape().setFillColor(sf::Color::White);
     player->add_component<KeyboardMovementComponent>();
     
     std::random_device dev;
@@ -97,9 +97,9 @@ void DecisionScene::load() {
         s->get_shape().setFillColor(sf::Color::Blue);
         
         auto sm = enemy->add_component<StateMachineComponent>();
-        sm->add_state("stationary", std::make_shared<SteeringState>(SteeringBehaviours::stationary,player,50.f,sf::Color::Yellow));
-        sm->add_state("seek", std::make_shared<SteeringState>(SteeringBehaviours::seek,player,50.f,sf::Color::Red));
-        sm->add_state("flee", std::make_shared<SteeringState>(SteeringBehaviours::flee,player,50.f,sf::Color::Green));
+        sm->add_state("stationary", std::make_shared<SteeringState>(SteeringBehaviours::stationary,player,50.f,sf::Color::Blue));
+        sm->add_state("seek", std::make_shared<SteeringState>(SteeringBehaviours::seek,player,50.f,sf::Color::Green));
+        sm->add_state("flee", std::make_shared<SteeringState>(SteeringBehaviours::flee,player,50.f,sf::Color::Yellow));
         
         auto decision = std::make_shared<DistanceDecision>(
             player,

@@ -15,7 +15,8 @@ protected:
     std::shared_ptr<DecisionTreeNode> _false_node;
     virtual std::shared_ptr<DecisionTreeNode> get_branch(Entity *owner) = 0;
 public:
-    BinaryDecision(std::shared_ptr<DecisionTreeNode> true_node, std::shared_ptr<DecisionTreeNode> false_node) : _true_node(true_node), _false_node(false_node) { }
+    BinaryDecision(std::shared_ptr<DecisionTreeNode> true_node, std::shared_ptr<DecisionTreeNode> false_node) 
+        : _true_node(true_node), _false_node(false_node) { }
 
     void make_decision(Entity *owner) {
         get_branch(owner)->make_decision(owner);
